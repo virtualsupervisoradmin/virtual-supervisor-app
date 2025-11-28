@@ -10,16 +10,16 @@ import random
 from io import BytesIO
 from docx import Document
 
-# --- 1. إعداد الصفحة ---
+# --- 1. إعداد الصفحة (القائمة مفتوحة إجبارياً) ---
 st.set_page_config(
     page_title="Virtual Supervisor", 
     layout="wide", 
     page_icon="🎓",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # ==========================================
-# 🎨 CSS: تصميم شامل + إصلاح القائمة الجانبية
+# 🎨 CSS: التصميم الشامل + التثبيت الجذري
 # ==========================================
 st.markdown("""
 <style>
@@ -32,86 +32,67 @@ st.markdown("""
         background-attachment: fixed;
     }
     
-    /* --- تعديل القائمة الجانبية لتظهر كاملة --- */
-    [data-testid="stSidebar"] { 
-        background-color: rgba(255, 255, 255, 0.98); 
-        border-right: 1px solid #ddd;
-        /* لا نضع قيوداً على الارتفاع هنا لنسمح لها بالظهور كاملة */
+    /* --- 🔥🔥🔥 إخفاء شريط المطورين وأيقونة GitHub نهائياً 🔥🔥🔥 --- */
+    [data-testid="stHeader"] {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0px !important;
     }
-
-    /* --- 🔥 GLOBAL HEADER STYLE --- */
-    .global-header {
-        text-align: center;
-        padding-bottom: 20px;
-        margin-bottom: 30px;
-        border-bottom: 2px solid rgba(0,0,0,0.05);
+    [data-testid="stToolbar"] {
+        display: none !important;
+        visibility: hidden !important;
     }
-    .main-title {
-        font-family: 'Poppins', sans-serif;
-        font-size: 3rem;
-        font-weight: 900;
-        color: #1565c0;
-        margin: 0;
-        letter-spacing: -1px;
-        line-height: 1.1;
+    
+    /* --- 🔥🔥🔥 تثبيت القائمة الجانبية (Split Layout) 🔥🔥🔥 --- */
+    
+    /* 1. تنسيق القائمة لتكون ثابتة */
+    [data-testid="stSidebar"] {
+        background-color: #ffffff !important;
+        border-right: 1px solid #e0e0e0;
+        top: 0 !important; /* تبدأ من أعلى الشاشة تماماً */
+        height: 100vh !important; /* طول الشاشة بالكامل */
+        padding-top: 20px !important; /* مسافة من الأعلى */
     }
-    .fixed-slogan {
-        font-family: 'Poppins', sans-serif;
-        background: -webkit-linear-gradient(45deg, #1e3c72, #2a5298);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-size: 1.6rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        margin-top: 5px;
+    
+    /* 2. إخفاء زر إغلاق القائمة (X) لمنع المستخدم من إغلاقها */
+    [data-testid="stSidebarCollapseButton"] {
+        display: none !important;
+    }
+    
+    /* 3. رفع المحتوى الرئيسي للأعلى (لأننا حذفنا الهيدر) */
+    .block-container {
+        padding-top: 2rem !important;
     }
 
     /* --- 🏠 Landing Page Styles --- */
     .hero-box {
-        text-align: center;
-        padding: 60px 20px;
+        text-align: center; padding: 60px 20px;
         background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-        border-radius: 25px;
-        margin-bottom: 40px;
-        border: 1px solid #90caf9;
+        border-radius: 25px; margin-bottom: 40px; border: 1px solid #90caf9;
         box-shadow: 0 10px 30px rgba(33, 150, 243, 0.15);
     }
-    .info-section {
-        background: white; padding: 30px; border-radius: 20px;
-        margin-bottom: 30px; border-left: 5px solid #2196f3;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    }
+    .hero-title { font-size: 3.5rem; font-weight: 900; color: #1565c0; margin-bottom: 5px; letter-spacing: -1px; }
+    .hero-slogan { font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 700; color: #1976d2; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; }
+
+    /* GLOBAL HEADER */
+    .global-header { text-align: center; padding-bottom: 20px; margin-bottom: 30px; border-bottom: 2px solid rgba(0,0,0,0.05); }
+    .main-title { font-family: 'Poppins', sans-serif; font-size: 3rem; font-weight: 900; color: #1565c0; margin: 0; letter-spacing: -1px; line-height: 1.1; }
+    .fixed-slogan { font-family: 'Poppins', sans-serif; background: -webkit-linear-gradient(45deg, #1e3c72, #2a5298); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; margin-top: 5px; }
+
+    .info-section { background: white; padding: 30px; border-radius: 20px; margin-bottom: 30px; border-left: 5px solid #2196f3; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     .info-text-en { font-size: 1.1rem; color: #444; margin-bottom: 15px; line-height: 1.6; }
     .info-text-ar { font-size: 1.1rem; color: #444; direction: rtl; line-height: 1.8; font-family: 'Tajawal'; }
 
-    .service-card {
-        background: white; padding: 25px; border-radius: 15px;
-        text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        border: 1px solid #e3f2fd; height: 100%; transition: transform 0.3s;
-    }
+    .service-card { background: white; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #e3f2fd; height: 100%; transition: transform 0.3s; }
     .service-card:hover { transform: translateY(-5px); border-color: #2196f3; }
     .srv-icon { font-size: 2.5rem; display: block; margin-bottom: 10px; }
     .srv-title { font-weight: 800; color: #1565c0; font-size: 1.1rem; }
+    
+    .contact-section { background: #f1f8ff; padding: 30px; border-radius: 20px; margin-top: 40px; border: 1px solid #d1e9ff; }
 
-    .contact-section {
-        background: #f1f8ff; padding: 30px; border-radius: 20px;
-        margin-top: 40px; border: 1px solid #d1e9ff;
-    }
-
-    /* --- 💬 زر الدردشة (Fixed Right) --- */
-    div[data-testid="stPopover"] {
-        position: fixed !important; bottom: 30px !important; right: 30px !important;
-        left: auto !important; top: auto !important; width: auto !important;
-        z-index: 99999999 !important; display: block !important;
-    }
-    div[data-testid="stPopover"] > div > button {
-        width: 60px !important; height: 60px !important; border-radius: 50% !important;
-        background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%) !important;
-        color: white !important; border: 3px solid white !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
-        display: flex !important; align-items: center !important; justify-content: center !important;
-    }
+    /* زر الدردشة */
+    div[data-testid="stPopover"] { position: fixed !important; bottom: 30px !important; right: 30px !important; left: auto !important; top: auto !important; width: auto !important; z-index: 99999999 !important; display: block !important; }
+    div[data-testid="stPopover"] > div > button { width: 60px !important; height: 60px !important; border-radius: 50% !important; background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%) !important; color: white !important; border: 3px solid white !important; box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important; display: flex !important; align-items: center !important; justify-content: center !important; }
     div[data-testid="stPopover"] > div > button::after { content: "💬"; font-size: 30px !important; margin-top: -4px !important; }
     div[data-testid="stPopover"] > div > button > div { display: none !important; }
 
@@ -133,7 +114,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 🔥 GLOBAL FIXED HEADER
+# 🔥 GLOBAL HEADER
 # ==========================================
 if st.session_state.get('page_state') != 'landing':
     st.markdown("""
@@ -591,7 +572,7 @@ with col_main:
             if internal_task_key == "formatting":
                 u_inp = st.text_area(T["ref_ph"], height=200)
                 # قائمة منسدلة لأنظمة التوثيق (تعريف المتغير style داخل الفورم)
-                style = st.selectbox(T["format_label"], ["APA 7", "MLA", "Chicago", "Harvard", "IEEE", "Vancouver"])
+                style = st.selectbox(T["format_label"], T["citation_styles"])
             
             elif internal_task_key == "analyze":
                 u_file = st.file_uploader(T["file_ph"], type="pdf")
