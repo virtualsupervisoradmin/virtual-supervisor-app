@@ -175,11 +175,10 @@ UI_TEXT = {
             "Discuss Research Topic (Free)": "discuss_topic",
             "Research Plan Proposal": "structure",
             "Suggest Academic References": "references",
-            "Format Bibliography / Reference List": "formatting",
+            "Format Bibliography (APA/MLA)": "formatting",
             "Scientific Proofreading": "proofread",
             "Analyze & Summarize Reference": "analyze"
-        },
-        "citation_styles": ["APA 7", "MLA", "Chicago / Turabian", "Harvard", "Vancouver", "IEEE", "Oxford / MHRA"]
+        }
     },
     "Français": {
         "dir": "ltr", "align": "left",
@@ -218,8 +217,7 @@ UI_TEXT = {
             "Mise en forme Bibliographie": "formatting",
             "Correction Académique": "proofread",
             "Analyse et Résumé de Référence": "analyze"
-        },
-        "citation_styles": ["APA 7", "MLA", "Chicago / Turabian", "Harvard", "Vancouver", "IEEE", "Oxford / MHRA"]
+        }
     },
     "العربية": {
         "dir": "rtl", "align": "right",
@@ -255,11 +253,10 @@ UI_TEXT = {
             "مناقشة موضوع البحث (مجاني)": "discuss_topic",
             "اقتراح خطة عمل": "structure",
             "اقتراح مراجع اكاديمية": "references",
-            "تنسيق وتنظيم المراجع": "formatting",
+            "تنسيق وتنظيم المراجع (APA)": "formatting",
             "تدقيق علمي": "proofread",
             "تحليل وتلخيص مرجع": "analyze"
-        },
-        "citation_styles": ["APA 7", "MLA", "Chicago / Turabian", "Harvard", "Vancouver", "IEEE", "Oxford / MHRA"]
+        }
     }
 }
 
@@ -545,7 +542,7 @@ if st.session_state.show_payment_page and not is_active:
         st.info(f"✅ {st.session_state.selected_plan}")
         with st.form("confirm_pay"):
             st.write(f"### 💳 BaridiMob")
-            st.markdown("""<h2 style='color:#0d47a1; background:#e3f2fd; padding:10px; border-radius:10px; text-align:center;'>00799999002283727175</h2><p style='text-align:center'>Souad Belkhanousse</p>""", unsafe_allow_html=True)
+            st.markdown("""<h2 style='color:#0d47a1; background:#e3f2fd; padding:10px; border-radius:10px; text-align:center;'>00799999002283727175</h2>""", unsafe_allow_html=True)
             ref = st.text_input("Transaction Reference / رقم الوصل")
             if st.form_submit_button("✅ تأكيد الدفع"):
                 if ref:
@@ -586,7 +583,7 @@ with col_main:
             # --- 🔥 واجهة خاصة لتنسيق المراجع ---
             if internal_task_key == "formatting":
                 u_inp = st.text_area(T["ref_ph"], height=200)
-                # قائمة منسدلة لأنظمة التوثيق
+                # قائمة منسدلة لأنظمة التوثيق (تعريف المتغير style داخل الفورم)
                 style = st.selectbox(T["format_label"], T["citation_styles"])
             
             elif internal_task_key == "analyze":
@@ -608,7 +605,7 @@ with col_main:
                     elif internal_task_key == "references":
                         final_p = f"Suggest 10 academic references (APA 7). Topic: '{u_inp}'"
                     
-                    # --- 🔥 برومبت التنسيق الذكي ---
+                    # --- 🔥 استخدام المتغير style الذي عرفناه داخل الفورم ---
                     elif internal_task_key == "formatting":
                         final_p = f"Reformat and organize this list of references according to {style} style rules. Fix punctuation, italics, and ordering. Input:\n{u_inp}"
                     
