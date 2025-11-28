@@ -19,7 +19,7 @@ st.set_page_config(
 )
 
 # ==========================================
-# 🎨 CSS: تصميم شامل + الشعار الكبير
+# 🎨 CSS: تصميم شامل + إخفاء شريط المطورين
 # ==========================================
 st.markdown("""
 <style>
@@ -33,7 +33,19 @@ st.markdown("""
     }
     [data-testid="stSidebar"] { background-color: rgba(255, 255, 255, 0.98); border-right: 1px solid #ddd; }
 
-    /* --- 🔥 GLOBAL HEADER STYLE --- */
+    /* --- 🔥 إخفاء شريط الأدوات العلوي وأيقونة GitHub (للاحترافية) --- */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    [data-testid="stToolbar"] {visibility: hidden !important; display: none !important;}
+    [data-testid="stHeader"] {visibility: hidden !important; display: none !important;}
+    
+    /* رفع المحتوى للأعلى قليلاً لملء الفراغ */
+    .block-container {
+        padding-top: 2rem !important;
+    }
+
+    /* --- 🔥 GLOBAL HEADER STYLE (الشعار الثابت) --- */
     .global-header {
         text-align: center;
         padding-bottom: 20px;
@@ -175,11 +187,10 @@ UI_TEXT = {
             "Discuss Research Topic (Free)": "discuss_topic",
             "Research Plan Proposal": "structure",
             "Suggest Academic References": "references",
-            "Format Bibliography / Reference List": "formatting",
+            "Format Bibliography (APA/MLA)": "formatting",
             "Scientific Proofreading": "proofread",
             "Analyze & Summarize Reference": "analyze"
-        },
-        "citation_styles": ["APA 7", "MLA", "Chicago / Turabian", "Harvard", "Vancouver", "IEEE", "Oxford / MHRA"]
+        }
     },
     "Français": {
         "dir": "ltr", "align": "left",
@@ -218,8 +229,7 @@ UI_TEXT = {
             "Mise en forme Bibliographie": "formatting",
             "Correction Académique": "proofread",
             "Analyse et Résumé de Référence": "analyze"
-        },
-        "citation_styles": ["APA 7", "MLA", "Chicago / Turabian", "Harvard", "Vancouver", "IEEE", "Oxford / MHRA"]
+        }
     },
     "العربية": {
         "dir": "rtl", "align": "right",
@@ -258,8 +268,7 @@ UI_TEXT = {
             "تنسيق وتنظيم المراجع": "formatting",
             "تدقيق علمي": "proofread",
             "تحليل وتلخيص مرجع": "analyze"
-        },
-        "citation_styles": ["APA 7", "MLA", "Chicago / Turabian", "Harvard", "Vancouver", "IEEE", "Oxford / MHRA"]
+        }
     }
 }
 
@@ -348,6 +357,7 @@ if not st.session_state.logged_in and st.session_state.page_state == "landing":
     <div class="hero-box">
         <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" width="120" style="margin-bottom:15px;">
         <h1 class="hero-title">Virtual Supervisor</h1>
+        <div class="hero-slogan">Research Smarter, Not Harder</div>
     </div>
     """, unsafe_allow_html=True)
     
@@ -586,8 +596,8 @@ with col_main:
             # --- 🔥 واجهة خاصة لتنسيق المراجع ---
             if internal_task_key == "formatting":
                 u_inp = st.text_area(T["ref_ph"], height=200)
-                # قائمة منسدلة لأنظمة التوثيق
-                style = st.selectbox(T["format_label"], T["citation_styles"])
+                # قائمة منسدلة لأنظمة التوثيق (تعريف المتغير style داخل الفورم)
+                style = st.selectbox(T["format_label"], ["APA 7", "MLA", "Chicago", "Harvard", "IEEE", "Vancouver"])
             
             elif internal_task_key == "analyze":
                 u_file = st.file_uploader(T["file_ph"], type="pdf")
@@ -608,9 +618,9 @@ with col_main:
                     elif internal_task_key == "references":
                         final_p = f"Suggest 10 academic references (APA 7). Topic: '{u_inp}'"
                     
-                    # --- 🔥 برومبت التنسيق الذكي ---
+                    # --- 🔥 استخدام المتغير style الذي عرفناه داخل الفورم ---
                     elif internal_task_key == "formatting":
-                        final_p = f"Reformat and organize this list of references according to {style} style rules. Fix punctuation, italics, and ordering. Input:\n{u_inp}"
+                        final_p = f"Format and organize this list of references strictly according to {style} style. Fix errors. Input: '{u_inp}'"
                     
                     elif internal_task_key == "proofread":
                         final_p = f"Academic proofreading. Text: '{u_inp}'"
