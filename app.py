@@ -19,7 +19,7 @@ st.set_page_config(
 )
 
 # ==========================================
-# 🎨 CSS: تصميم شامل + إخفاء شريط المطورين
+# 🎨 CSS: التصميم الشامل
 # ==========================================
 st.markdown("""
 <style>
@@ -33,113 +33,47 @@ st.markdown("""
     }
     [data-testid="stSidebar"] { background-color: rgba(255, 255, 255, 0.98); border-right: 1px solid #ddd; }
 
-    /* --- 🔥 إخفاء شريط الأدوات العلوي وأيقونة GitHub (للاحترافية) --- */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    [data-testid="stToolbar"] {visibility: hidden !important; display: none !important;}
-    [data-testid="stHeader"] {visibility: hidden !important; display: none !important;}
-    
-    /* رفع المحتوى للأعلى قليلاً لملء الفراغ */
-    .block-container {
-        padding-top: 2rem !important;
-    }
-
-    /* --- 🔥 GLOBAL HEADER STYLE (الشعار الثابت) --- */
+    /* --- 🔥 GLOBAL HEADER --- */
     .global-header {
-        text-align: center;
-        padding-bottom: 20px;
-        margin-bottom: 30px;
-        border-bottom: 2px solid rgba(0,0,0,0.05);
+        text-align: center; padding-bottom: 20px; margin-bottom: 30px; border-bottom: 2px solid rgba(0,0,0,0.05);
     }
     .main-title {
-        font-family: 'Poppins', sans-serif;
-        font-size: 3rem;
-        font-weight: 900;
-        color: #1565c0;
-        margin: 0;
-        letter-spacing: -1px;
-        line-height: 1.1;
+        font-family: 'Poppins', sans-serif; font-size: 3rem; font-weight: 900; color: #1565c0; margin: 0; letter-spacing: -1px; line-height: 1.1;
     }
     .fixed-slogan {
-        font-family: 'Poppins', sans-serif;
-        background: -webkit-linear-gradient(45deg, #1e3c72, #2a5298);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-size: 1.6rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        margin-top: 5px;
+        font-family: 'Poppins', sans-serif; background: -webkit-linear-gradient(45deg, #1e3c72, #2a5298); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        font-size: 1.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; margin-top: 5px;
     }
 
-    /* --- 🏠 Landing Page Styles --- */
-    .hero-box {
-        text-align: center;
-        padding: 60px 20px;
-        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-        border-radius: 25px;
-        margin-bottom: 40px;
-        border: 1px solid #90caf9;
-        box-shadow: 0 10px 30px rgba(33, 150, 243, 0.15);
-    }
-    .info-section {
-        background: white; padding: 30px; border-radius: 20px;
-        margin-bottom: 30px; border-left: 5px solid #2196f3;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    }
-    .info-text-en { font-size: 1.1rem; color: #444; margin-bottom: 15px; line-height: 1.6; }
-    .info-text-ar { font-size: 1.1rem; color: #444; direction: rtl; line-height: 1.8; font-family: 'Tajawal'; }
-
-    .service-card {
-        background: white; padding: 25px; border-radius: 15px;
-        text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        border: 1px solid #e3f2fd; height: 100%; transition: transform 0.3s;
-    }
+    /* --- Landing Page --- */
+    .hero-box { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-radius: 25px; margin-bottom: 40px; border: 1px solid #90caf9; box-shadow: 0 10px 30px rgba(33, 150, 243, 0.15); }
+    .service-card { background: white; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #e3f2fd; height: 100%; transition: transform 0.3s; }
     .service-card:hover { transform: translateY(-5px); border-color: #2196f3; }
     .srv-icon { font-size: 2.5rem; display: block; margin-bottom: 10px; }
     .srv-title { font-weight: 800; color: #1565c0; font-size: 1.1rem; }
-
-    .contact-section {
-        background: #f1f8ff; padding: 30px; border-radius: 20px;
-        margin-top: 40px; border: 1px solid #d1e9ff;
-    }
-
-    /* --- 💬 زر الدردشة (Fixed Right) --- */
-    div[data-testid="stPopover"] {
-        position: fixed !important; bottom: 30px !important; right: 30px !important;
-        left: auto !important; top: auto !important; width: auto !important;
-        z-index: 99999999 !important; display: block !important;
-    }
-    div[data-testid="stPopover"] > div > button {
-        width: 60px !important; height: 60px !important; border-radius: 50% !important;
-        background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%) !important;
-        color: white !important; border: 3px solid white !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
-        display: flex !important; align-items: center !important; justify-content: center !important;
-    }
+    .info-section { background: white; padding: 30px; border-radius: 20px; margin-bottom: 30px; border-left: 5px solid #2196f3; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    
+    /* --- Chat Button --- */
+    div[data-testid="stPopover"] { position: fixed !important; bottom: 30px !important; right: 30px !important; left: auto !important; top: auto !important; width: auto !important; z-index: 99999999 !important; display: block !important; }
+    div[data-testid="stPopover"] > div > button { width: 60px !important; height: 60px !important; border-radius: 50% !important; background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%) !important; color: white !important; border: 3px solid white !important; box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important; display: flex !important; align-items: center !important; justify-content: center !important; }
     div[data-testid="stPopover"] > div > button::after { content: "💬"; font-size: 30px !important; margin-top: -4px !important; }
     div[data-testid="stPopover"] > div > button > div { display: none !important; }
 
-    @keyframes floatUp { 0% { bottom: -50px; opacity: 1; transform: rotate(0deg); } 100% { bottom: 100vh; opacity: 0; transform: rotate(720deg); } }
-    .grad-cap { position: fixed; font-size: 35px; z-index: 9999999; pointer-events: none; animation: floatUp 4s linear forwards; }
-
+    /* --- Others --- */
     .plan-card { background: white; border-radius: 15px; padding: 20px; text-align: center; border: 1px solid #eee; box-shadow: 0 5px 15px rgba(0,0,0,0.05); height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
     .price-tag { font-size: 2rem; font-weight: 900; color: #2c3e50; margin: 15px 0; }
     .blur-content { position: relative; max-height: 350px; overflow: hidden; mask-image: linear-gradient(to bottom, black 50%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%); }
     .pay-btn-overlay { background: #e74c3c; color: white; padding: 10px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; border: 2px solid white; box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4); margin-top: -30px; position: relative; z-index: 20; transition: transform 0.2s; }
     .pay-btn-overlay:hover { transform: scale(1.05); }
-    
-    .sales-box { background: white; padding: 30px; border-radius: 15px; border-top: 6px solid #3a7bd5; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 30px; }
-    .result-card { background: white; padding: 30px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-    .integrity-box { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 15px; border-radius: 12px; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; }
     .stButton button { border-radius: 50px; font-weight: bold; background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%); color: white; border: none; }
     [data-testid="stChatMessage"] { background: white; border-radius: 15px; }
+    @keyframes floatUp { 0% { bottom: -50px; opacity: 1; transform: rotate(0deg); } 100% { bottom: 100vh; opacity: 0; transform: rotate(720deg); } }
+    .grad-cap { position: fixed; font-size: 35px; z-index: 9999999; pointer-events: none; animation: floatUp 4s linear forwards; }
 </style>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 🔥 GLOBAL FIXED HEADER
+# 🔥 GLOBAL HEADER
 # ==========================================
 if st.session_state.get('page_state') != 'landing':
     st.markdown("""
@@ -183,14 +117,7 @@ UI_TEXT = {
         "cancel_btn": "🔙 Return to Workspace",
         "fields": ["Science & Tech", "Medical", "Law", "Economics", "Arts", "Humanities", "Islamic", "Architecture"],
         "levels": ["Master's", "PhD", "Researcher"],
-        "tasks": {
-            "Discuss Research Topic (Free)": "discuss_topic",
-            "Research Plan Proposal": "structure",
-            "Suggest Academic References": "references",
-            "Format Bibliography (APA/MLA)": "formatting",
-            "Scientific Proofreading": "proofread",
-            "Analyze & Summarize Reference": "analyze"
-        }
+        "tasks": {"Discuss Research Topic (Free)": "discuss_topic", "Research Plan Proposal": "structure", "Suggest Academic References": "references", "Format Bibliography (APA/MLA)": "formatting", "Scientific Proofreading": "proofread", "Analyze & Summarize Reference": "analyze"}
     },
     "Français": {
         "dir": "ltr", "align": "left",
@@ -222,14 +149,7 @@ UI_TEXT = {
         "cancel_btn": "🔙 Retour",
         "fields": ["Sciences & Tech", "Médical", "Droit", "Économie", "Lettres", "Humaines", "Islamiques", "Architecture"],
         "levels": ["Master", "Doctorat", "Chercheur"],
-        "tasks": {
-            "Discuter du Sujet (Gratuit)": "discuss_topic",
-            "Proposition de Plan": "structure",
-            "Suggestion de Références": "references",
-            "Mise en forme Bibliographie": "formatting",
-            "Correction Académique": "proofread",
-            "Analyse et Résumé de Référence": "analyze"
-        }
+        "tasks": {"Discuter du Sujet (Gratuit)": "discuss_topic", "Proposition de Plan": "structure", "Suggestion de Références": "references", "Mise en forme Bibliographie": "formatting", "Correction Académique": "proofread", "Analyse et Résumé de Référence": "analyze"}
     },
     "العربية": {
         "dir": "rtl", "align": "right",
@@ -261,14 +181,7 @@ UI_TEXT = {
         "cancel_btn": "🔙 العودة لمساحة العمل",
         "fields": ["العلوم والتكنولوجيا", "الطب والصيدلة", "الحقوق والسياسة", "الاقتصاد", "الآداب واللغات", "العلوم الإنسانية", "العلوم الإسلامية", "العمران"],
         "levels": ["ماستر", "دكتوراه", "باحث أكاديمي"],
-        "tasks": {
-            "مناقشة موضوع البحث (مجاني)": "discuss_topic",
-            "اقتراح خطة عمل": "structure",
-            "اقتراح مراجع اكاديمية": "references",
-            "تنسيق وتنظيم المراجع": "formatting",
-            "تدقيق علمي": "proofread",
-            "تحليل وتلخيص مرجع": "analyze"
-        }
+        "tasks": {"مناقشة موضوع البحث (مجاني)": "discuss_topic", "اقتراح خطة عمل": "structure", "اقتراح مراجع اكاديمية": "references", "تنسيق وتنظيم المراجع": "formatting", "تدقيق علمي": "proofread", "تحليل وتلخيص مرجع": "analyze"}
     }
 }
 
@@ -349,6 +262,48 @@ def create_word_docx(content, title="Result"):
     doc = Document(); doc.add_heading(title, 0); doc.add_paragraph(content); bio = BytesIO(); doc.save(bio); return bio.getvalue()
 
 # ==========================================
+# 🌟 SIDEBAR (تم نقلها للأعلى لضمان الظهور)
+# ==========================================
+# القائمة الجانبية ستظهر فقط إذا كان المستخدم مسجلاً للدخول
+if st.session_state.logged_in:
+    with st.sidebar:
+        # حالة الحساب
+        curr_email = str(st.session_state.user_info.get('username')).lower()
+        try: curr_status = str(st.session_state.user_info.get('status')).lower()
+        except: curr_status = "expired"
+        is_admin = (curr_email == ADMIN_EMAIL.strip().lower())
+        is_active = is_admin or curr_status == 'active'
+        
+        status_color = "#2ecc71" if is_active else "#ef5350"
+        status_text = "نشط" if is_active else "غير مفعل"
+        st.markdown(f"<div style='background:{status_color};padding:10px;border-radius:8px;color:white;text-align:center;margin-bottom:20px;'><b>{st.session_state.user_info.get('name')}</b><br><small>{status_text}</small></div>", unsafe_allow_html=True)
+        
+        if is_admin:
+            if st.checkbox("لوحة التحكم (Admin)"): st.session_state.admin_mode = True
+            else: st.session_state.admin_mode = False
+        
+        st.markdown("---")
+        lang = st.selectbox("اللغة / Language", ["English", "Français", "العربية"])
+        T = UI_TEXT[lang]
+        st.markdown(f"<style>.stApp {{ direction: {T['dir']}; text-align: {T['align']}; }} [data-testid='stPopover']::before {{ content: '{T['chat_title']}'; }} </style>", unsafe_allow_html=True)
+        
+        st.subheader(T["sidebar_settings"])
+        field = st.selectbox(T["field_label"], T["fields"])
+        level = st.radio(T["level_label"], T["levels"])
+        
+        t_names = list(T["tasks"].keys())
+        task_disp = st.selectbox(T["task_label"], t_names)
+        internal_task_key = T["tasks"][task_disp]
+        
+        if is_active:
+            with st.expander(T["history_label"]):
+                hist = get_history(curr_email)
+                for i, h in enumerate(reversed(hist)):
+                    st.button(f"{h.get('date')} | {h.get('task').split(':')[0]}", key=f"h_{i}", on_click=set_archive, args=(h.get('content'), h.get('task')))
+        
+        if st.button("تسجيل خروج"): logout()
+
+# ==========================================
 # 🏠 LANDING PAGE
 # ==========================================
 if not st.session_state.logged_in and st.session_state.page_state == "landing":
@@ -384,53 +339,27 @@ if not st.session_state.logged_in and st.session_state.page_state == "landing":
     # --- Services Grid ---
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        st.markdown("""
-        <div class="service-card">
-            <span class="srv-icon">📋</span>
-            <div class="srv-title">اقتراح الخطط</div>
-            <div class="srv-desc">بناء هيكل بحثي متكامل (فصول ومباحث) بمنهجية علمية.</div>
-        </div>""", unsafe_allow_html=True)
+        st.markdown("""<div class="service-card"><span class="srv-icon">📋</span><div class="srv-title">اقتراح الخطط</div><div class="srv-desc">بناء هيكل بحثي متكامل (فصول ومباحث) بمنهجية علمية.</div></div>""", unsafe_allow_html=True)
     with c2:
-        st.markdown("""
-        <div class="service-card">
-            <span class="srv-icon">📚</span>
-            <div class="srv-title">تنسيق المراجع</div>
-            <div class="srv-desc">اقتراح وضبط المراجع وفق أسلوب APA العالمي.</div>
-        </div>""", unsafe_allow_html=True)
+        st.markdown("""<div class="service-card"><span class="srv-icon">📚</span><div class="srv-title">تنسيق المراجع</div><div class="srv-desc">اقتراح وضبط المراجع وفق أسلوب APA العالمي.</div></div>""", unsafe_allow_html=True)
     with c3:
-        st.markdown("""
-        <div class="service-card">
-            <span class="srv-icon">🔍</span>
-            <div class="srv-title">تحليل المراجع</div>
-            <div class="srv-desc">تلخيص الكتب والمقالات الطويلة واستخراج الزبدة.</div>
-        </div>""", unsafe_allow_html=True)
+        st.markdown("""<div class="service-card"><span class="srv-icon">🔍</span><div class="srv-title">تحليل المراجع</div><div class="srv-desc">تلخيص الكتب والمقالات الطويلة واستخراج الزبدة.</div></div>""", unsafe_allow_html=True)
     with c4:
-        st.markdown("""
-        <div class="service-card">
-            <span class="srv-icon">✒️</span>
-            <div class="srv-title">التدقيق اللغوي</div>
-            <div class="srv-desc">تصحيح الأخطاء وتحسين الأسلوب الأكاديمي للنص.</div>
-        </div>""", unsafe_allow_html=True)
+        st.markdown("""<div class="service-card"><span class="srv-icon">✒️</span><div class="srv-title">التدقيق اللغوي</div><div class="srv-desc">تصحيح الأخطاء وتحسين الأسلوب الأكاديمي للنص.</div></div>""", unsafe_allow_html=True)
 
-    # --- CTA (Start Now) ---
+    # --- CTA ---
     st.markdown("<br>", unsafe_allow_html=True)
     c_btn1, c_btn2, c_btn3 = st.columns([1, 2, 1])
     with c_btn2:
         if st.button("🚀 ابدأ الآن مجاناً", use_container_width=True):
             go_to_auth()
 
-    # --- Contact Form ---
+    # --- Contact ---
     st.markdown("<br><br>", unsafe_allow_html=True)
     with st.container():
-        st.markdown("""
-        <div class="contact-section">
-            <h3 style="text-align:center; color:#0d47a1;">📬 تواصل معنا</h3>
-            <p style="text-align:center; color:#666;">لديك استفسار؟ نحن هنا للمساعدة</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        c_form1, c_form2, c_form3 = st.columns([1, 2, 1])
-        with c_form2:
+        st.markdown("""<div class="contact-section"><h3 style="text-align:center; color:#0d47a1;">📬 تواصل معنا</h3><p style="text-align:center; color:#666;">لديك استفسار؟ نحن هنا للمساعدة</p></div>""", unsafe_allow_html=True)
+        c1, c2, c3 = st.columns([1, 2, 1])
+        with c2:
             with st.form("contact_us"):
                 name = st.text_input("الاسم الكامل")
                 msg = st.text_area("رسالتك")
@@ -469,54 +398,6 @@ if not st.session_state.logged_in:
                     if ok: st.success("تم إنشاء الحساب!"); st.info("سجل دخولك الآن.")
                     else: st.error("خطأ")
     st.stop()
-
-# ==========================================
-# 💰 Paywall & Config
-# ==========================================
-curr_email = str(st.session_state.user_info.get('username')).lower()
-try: curr_status = str(st.session_state.user_info.get('status')).lower()
-except: curr_status = "expired"
-is_admin = (curr_email == ADMIN_EMAIL.strip().lower())
-is_active = is_admin or curr_status == 'active'
-
-try: genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-except: st.stop()
-
-@st.cache_resource
-def get_model():
-    m = [x.name for x in genai.list_models() if 'generateContent' in x.supported_generation_methods]
-    return next((x for x in m if 'flash' in x), m[0])
-
-# --- Sidebar ---
-with st.sidebar:
-    status_color = "#2ecc71" if is_active else "#ef5350"
-    status_text = "نشط" if is_active else "غير مفعل"
-    st.markdown(f"<div style='background:{status_color};padding:10px;border-radius:8px;color:white;text-align:center;margin-bottom:20px;'><b>{st.session_state.user_info.get('name')}</b><br><small>{status_text}</small></div>", unsafe_allow_html=True)
-    
-    if is_admin:
-        if st.checkbox("لوحة التحكم (Admin)"): st.session_state.admin_mode = True
-        else: st.session_state.admin_mode = False
-    
-    st.markdown("---")
-    lang = st.selectbox("اللغة / Language", ["English", "Français", "العربية"])
-    T = UI_TEXT[lang]
-    st.markdown(f"<style>.stApp {{ direction: {T['dir']}; text-align: {T['align']}; }} [data-testid='stPopover']::before {{ content: '{T['chat_title']}'; }} </style>", unsafe_allow_html=True)
-    
-    st.subheader(T["sidebar_settings"])
-    field = st.selectbox(T["field_label"], T["fields"])
-    level = st.radio(T["level_label"], T["levels"])
-    
-    t_names = list(T["tasks"].keys())
-    task_disp = st.selectbox(T["task_label"], t_names)
-    internal_task_key = T["tasks"][task_disp]
-    
-    if is_active:
-        with st.expander(T["history_label"]):
-            hist = get_history(curr_email)
-            for i, h in enumerate(reversed(hist)):
-                st.button(f"{h.get('date')} | {h.get('task').split(':')[0]}", key=f"h_{i}", on_click=set_archive, args=(h.get('content'), h.get('task')))
-    
-    if st.button("تسجيل خروج"): logout()
 
 # --- Admin ---
 if st.session_state.get("admin_mode", False) and is_admin:
@@ -593,10 +474,8 @@ with col_main:
             u_inp = ""
             u_file = None
             
-            # --- 🔥 واجهة خاصة لتنسيق المراجع ---
             if internal_task_key == "formatting":
                 u_inp = st.text_area(T["ref_ph"], height=200)
-                # قائمة منسدلة لأنظمة التوثيق (تعريف المتغير style داخل الفورم)
                 style = st.selectbox(T["format_label"], ["APA 7", "MLA", "Chicago", "Harvard", "IEEE", "Vancouver"])
             
             elif internal_task_key == "analyze":
@@ -617,11 +496,8 @@ with col_main:
                         final_p = f"Create detailed thesis structure. Write 1500 words. Topic: '{u_inp}'"
                     elif internal_task_key == "references":
                         final_p = f"Suggest 10 academic references (APA 7). Topic: '{u_inp}'"
-                    
-                    # --- 🔥 استخدام المتغير style الذي عرفناه داخل الفورم ---
                     elif internal_task_key == "formatting":
                         final_p = f"Format and organize this list of references strictly according to {style} style. Fix errors. Input: '{u_inp}'"
-                    
                     elif internal_task_key == "proofread":
                         final_p = f"Academic proofreading. Text: '{u_inp}'"
                     elif internal_task_key == "analyze" and u_file:
