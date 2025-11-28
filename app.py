@@ -10,16 +10,16 @@ import random
 from io import BytesIO
 from docx import Document
 
-# --- 1. إعداد الصفحة (تم التعديل لتكون القائمة مفتوحة افتراضياً) ---
+# --- 1. إعداد الصفحة (القائمة مفتوحة إجبارياً) ---
 st.set_page_config(
     page_title="Virtual Supervisor", 
     layout="wide", 
     page_icon="🎓",
-    initial_sidebar_state="expanded" # <-- تم التعديل هنا لتظهر القائمة دائماً
+    initial_sidebar_state="expanded"
 )
 
 # ==========================================
-# 🎨 CSS: إصلاح اختفاء القائمة الجانبية
+# 🎨 CSS: تثبيت القائمة الجانبية (غير قابلة للإغلاق)
 # ==========================================
 st.markdown("""
 <style>
@@ -31,87 +31,56 @@ st.markdown("""
         background: linear-gradient(135deg, #fdfbfb 0%, #e3f2fd 100%);
         background-attachment: fixed;
     }
-    [data-testid="stSidebar"] { background-color: rgba(255, 255, 255, 0.98); border-right: 1px solid #ddd; }
-
-    /* --- 🔥 إصلاح القائمة الجانبية (Sidebar Fix) 🔥 --- */
     
-    /* 1. إظهار الهيدر (لأنه يحتوي على زر القائمة) */
+    /* --- 🔥🔥🔥 تثبيت القائمة الجانبية (SIDEBAR LOCK) 🔥🔥🔥 --- */
+    
+    /* 1. منع إغلاق القائمة (إخفاء زر X وزر السهم) */
+    [data-testid="stSidebarCollapseButton"] {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    
+    /* 2. إخفاء الهيدر العلوي بالكامل (لمنع التحكم في القائمة) */
     [data-testid="stHeader"] {
-        visibility: visible !important;
-        display: block !important;
-        background: transparent !important; /* جعله شفافاً لكي لا يزعج التصميم */
-    }
-
-    /* 2. إخفاء أزرار المطورين (Deploy, Fork) في اليمين فقط */
-    [data-testid="stToolbar"] {
-        visibility: hidden !important;
         display: none !important;
     }
     
-    /* 3. إخفاء الخط الأحمر المزخرف في الأعلى */
-    [data-testid="stDecoration"] {
-        visibility: hidden !important;
-        display: none !important;
+    /* 3. تنسيق القائمة لتكون ثابتة وأنيقة */
+    [data-testid="stSidebar"] {
+        background-color: #ffffff !important;
+        border-right: 1px solid #e0e0e0;
+        min-width: 300px !important; /* عرض ثابت */
+        max-width: 300px !important;
+    }
+    
+    /* 4. رفع المحتوى الرئيسي ليملأ الشاشة */
+    .block-container {
+        padding-top: 2rem !important;
     }
 
-    /* --- 🏠 Landing Page Styles --- */
+    /* --- بقية التنسيقات (البطاقات، الأزرار، إلخ) --- */
     .hero-box {
-        text-align: center;
-        padding: 60px 20px;
+        text-align: center; padding: 60px 20px;
         background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-        border-radius: 25px;
-        margin-bottom: 40px;
-        border: 1px solid #90caf9;
+        border-radius: 25px; margin-bottom: 40px; border: 1px solid #90caf9;
         box-shadow: 0 10px 30px rgba(33, 150, 243, 0.15);
     }
-    .hero-title {
-        font-size: 3.5rem; font-weight: 900; color: #1565c0; margin-bottom: 5px;
-        letter-spacing: -1px;
-    }
-    .hero-slogan {
-        font-family: 'Poppins', sans-serif;
-        font-size: 1.3rem; font-weight: 500; color: #1976d2;
-        margin-top: 10px;
-        font-style: italic;
-    }
+    .hero-title { font-size: 3.5rem; font-weight: 900; color: #1565c0; margin-bottom: 5px; letter-spacing: -1px; }
+    .hero-slogan { font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 700; color: #1976d2; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; }
 
-    /* --- GLOBAL HEADER STYLE --- */
-    .global-header {
-        text-align: center;
-        padding-bottom: 20px;
-        margin-bottom: 30px;
-        border-bottom: 2px solid rgba(0,0,0,0.05);
-        margin-top: -50px; /* سحب الشعار للأعلى قليلاً لأننا أظهرنا الهيدر */
-    }
-    .main-title {
-        font-family: 'Poppins', sans-serif;
-        font-size: 3rem;
-        font-weight: 900;
-        color: #1565c0;
-        margin: 0;
-        letter-spacing: -1px;
-        line-height: 1.1;
-    }
-    .fixed-slogan {
-        font-family: 'Poppins', sans-serif;
-        background: -webkit-linear-gradient(45deg, #1e3c72, #2a5298);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-size: 1.6rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        margin-top: 5px;
-    }
+    .global-header { text-align: center; padding-bottom: 20px; margin-bottom: 30px; border-bottom: 2px solid rgba(0,0,0,0.05); }
+    .main-title { font-family: 'Poppins', sans-serif; font-size: 3rem; font-weight: 900; color: #1565c0; margin: 0; letter-spacing: -1px; line-height: 1.1; }
+    .fixed-slogan { font-family: 'Poppins', sans-serif; background: -webkit-linear-gradient(45deg, #1e3c72, #2a5298); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; margin-top: 5px; }
 
-    /* بقية التنسيقات */
     .info-section { background: white; padding: 30px; border-radius: 20px; margin-bottom: 30px; border-left: 5px solid #2196f3; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     .info-text-en { font-size: 1.1rem; color: #444; margin-bottom: 15px; line-height: 1.6; }
     .info-text-ar { font-size: 1.1rem; color: #444; direction: rtl; line-height: 1.8; font-family: 'Tajawal'; }
+
     .service-card { background: white; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #e3f2fd; height: 100%; transition: transform 0.3s; }
     .service-card:hover { transform: translateY(-5px); border-color: #2196f3; }
     .srv-icon { font-size: 2.5rem; display: block; margin-bottom: 10px; }
     .srv-title { font-weight: 800; color: #1565c0; font-size: 1.1rem; }
+
     .contact-section { background: #f1f8ff; padding: 30px; border-radius: 20px; margin-top: 40px; border: 1px solid #d1e9ff; }
 
     /* زر الدردشة */
@@ -356,7 +325,7 @@ if not st.session_state.logged_in and st.session_state.page_state == "landing":
     <div class="hero-box">
         <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" width="120" style="margin-bottom:15px;">
         <h1 class="hero-title">Virtual Supervisor</h1>
-        <div class="hero-slogan">Your smart assistant to accomplish your research efficiently and successfully<br>رفيقك الذكي لإنجاز بحثك بكفاءة ونجاح</div>
+        <div class="hero-slogan">Research Smarter, Not Harder</div>
     </div>
     """, unsafe_allow_html=True)
     
@@ -619,7 +588,7 @@ with col_main:
                     
                     # --- 🔥 استخدام المتغير style الذي عرفناه داخل الفورم ---
                     elif internal_task_key == "formatting":
-                        final_p = f"Reformat and organize this list of references strictly according to {style} style rules. Fix punctuation, italics, and ordering. Input:\n{u_inp}"
+                        final_p = f"Reformat and organize this list of references according to {style} style rules. Fix punctuation, italics, and ordering. Input:\n{u_inp}"
                     
                     elif internal_task_key == "proofread":
                         final_p = f"Academic proofreading. Text: '{u_inp}'"
