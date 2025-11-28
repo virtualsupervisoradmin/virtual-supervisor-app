@@ -15,11 +15,11 @@ st.set_page_config(
     page_title="Virtual Supervisor", 
     layout="wide", 
     page_icon="🎓",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # ==========================================
-# 🎨 CSS: تصميم شامل + الشعار الكبير
+# 🎨 CSS: تصميم شامل + إخفاء شريط المطورين
 # ==========================================
 st.markdown("""
 <style>
@@ -32,6 +32,24 @@ st.markdown("""
         background-attachment: fixed;
     }
     [data-testid="stSidebar"] { background-color: rgba(255, 255, 255, 0.98); border-right: 1px solid #ddd; }
+
+    /* --- 🔥 إخفاء شريط الأدوات العلوي (Github/Fork/Deploy) --- */
+    [data-testid="stToolbar"] {
+        visibility: hidden !important;
+        display: none !important;
+    }
+    [data-testid="stHeader"] {
+        visibility: hidden !important;
+        display: none !important;
+    }
+    footer {
+        visibility: hidden !important;
+        display: none !important;
+    }
+    /* رفع المحتوى للأعلى قليلاً لملء الفراغ بعد إخفاء الهيدر */
+    .block-container {
+        padding-top: 2rem !important;
+    }
 
     /* --- 🔥 GLOBAL HEADER STYLE --- */
     .global-header {
@@ -121,6 +139,7 @@ st.markdown("""
     .sales-box { background: white; padding: 30px; border-radius: 15px; border-top: 6px solid #3a7bd5; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 30px; }
     .result-card { background: white; padding: 30px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     .integrity-box { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 15px; border-radius: 12px; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; }
+    .slogan-text { font-family: 'Poppins', 'Tajawal', sans-serif; font-size: 1.8rem; font-weight: 800; color: #7f8c8d; text-align: center; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
     .stButton button { border-radius: 50px; font-weight: bold; background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%); color: white; border: none; }
     [data-testid="stChatMessage"] { background: white; border-radius: 15px; }
 </style>
@@ -542,7 +561,7 @@ if st.session_state.show_payment_page and not is_active:
         st.info(f"✅ {st.session_state.selected_plan}")
         with st.form("confirm_pay"):
             st.write(f"### 💳 BaridiMob")
-            st.markdown("""<h2 style='color:#0d47a1; background:#e3f2fd; padding:10px; border-radius:10px; text-align:center;'>00799999002283727175</h2>""", unsafe_allow_html=True)
+            st.markdown("""<h2 style='color:#0d47a1; background:#e3f2fd; padding:10px; border-radius:10px; text-align:center;'>00799999002283727175</h2><p style='text-align:center'>Souad Belkhanousse</p>""", unsafe_allow_html=True)
             ref = st.text_input("Transaction Reference / رقم الوصل")
             if st.form_submit_button("✅ تأكيد الدفع"):
                 if ref:
@@ -584,7 +603,7 @@ with col_main:
             if internal_task_key == "formatting":
                 u_inp = st.text_area(T["ref_ph"], height=200)
                 # قائمة منسدلة لأنظمة التوثيق (تعريف المتغير style داخل الفورم)
-                style = st.selectbox(T["format_label"], T["citation_styles"])
+                style = st.selectbox(T["format_label"], ["APA 7", "MLA", "Chicago", "Harvard", "IEEE", "Vancouver"])
             
             elif internal_task_key == "analyze":
                 u_file = st.file_uploader(T["file_ph"], type="pdf")
@@ -607,7 +626,7 @@ with col_main:
                     
                     # --- 🔥 استخدام المتغير style الذي عرفناه داخل الفورم ---
                     elif internal_task_key == "formatting":
-                        final_p = f"Reformat and organize this list of references according to {style} style rules. Fix punctuation, italics, and ordering. Input:\n{u_inp}"
+                        final_p = f"Format and organize this list of references strictly according to {style} style rules. Fix punctuation, italics, and ordering. Input:\n{u_inp}"
                     
                     elif internal_task_key == "proofread":
                         final_p = f"Academic proofreading. Text: '{u_inp}'"
