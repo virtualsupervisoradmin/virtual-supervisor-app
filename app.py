@@ -10,26 +10,21 @@ import random
 from io import BytesIO
 from docx import Document
 
-# --- 1. إعداد الصفحة (مغلقة دائماً في البداية) ---
+# --- NEW: تهيئة حالة القائمة (مغلقة افتراضياً للهاتف) ---
+if 'sidebar_state' not in st.session_state:
+    st.session_state.sidebar_state = 'collapsed'
+
+# --- 1. إعداد الصفحة ---
 st.set_page_config(
     page_title="Virtual Supervisor", 
     layout="wide", 
     page_icon="🎓",
-    initial_sidebar_state="collapsed"
+    # تم التعديل هنا ليعتمد على الزر
+    initial_sidebar_state=st.session_state.sidebar_state
 )
 
-# --- 2. التحكم في حالة القائمة (State Management) ---
-if 'sidebar_state' not in st.session_state:
-    st.session_state.sidebar_state = 'collapsed'
-
-def open_sidebar():
-    st.session_state.sidebar_state = 'expanded'
-
-def close_sidebar():
-    st.session_state.sidebar_state = 'collapsed'
-
 # ==========================================
-# 🎨 CSS: التصميم الشامل + منطق القائمة للهاتف
+# 🎨 CSS: التصميم الشامل + التثبيت الجذري
 # ==========================================
 st.markdown("""
 <style>
@@ -42,29 +37,49 @@ st.markdown("""
         background-attachment: fixed;
     }
     
-    /* إخفاء الهيدر */
-    [data-testid="stHeader"] { display: none !important; visibility: hidden !important; height: 0px !important; }
-    [data-testid="stToolbar"] { display: none !important; visibility: hidden !important; }
+    /* --- 🔥🔥🔥 إخفاء شريط المطورين وأيقونة GitHub نهائياً 🔥🔥🔥 --- */
+    [data-testid="stHeader"] {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0px !important;
+    }
+    [data-testid="stToolbar"] {
+        display: none !important;
+        visibility: hidden !important;
+    }
     
-    /* تنسيقات القائمة الجانبية الأساسية */
+    /* --- 🔥🔥🔥 تثبيت القائمة الجانبية (Split Layout) 🔥🔥🔥 --- */
+    
+    /* 1. تنسيق القائمة لتكون ثابتة */
     [data-testid="stSidebar"] {
         background-color: #ffffff !important;
         border-right: 1px solid #e0e0e0;
-        top: 0 !important;
-        padding-top: 20px !important;
-        transition: all 0.3s ease; /* إضافة تأثير حركي */
+        top: 0 !important; /* تبدأ من أعلى الشاشة تماماً */
+        height: 100vh !important; /* طول الشاشة بالكامل */
+        padding-top: 20px !important; /* مسافة من الأعلى */
     }
     
-    /* إخفاء زر الإغلاق الافتراضي */
-    [data-testid="stSidebarCollapseButton"] { display: none !important; }
+    /* 2. إخفاء زر إغلاق القائمة (X) لمنع المستخدم من إغلاقها */
+    [data-testid="stSidebarCollapseButton"] {
+        display: none !important;
+    }
     
-    .block-container { padding-top: 2rem !important; }
+    /* 3. رفع المحتوى الرئيسي للأعلى (لأننا حذفنا الهيدر) */
+    .block-container {
+        padding-top: 2rem !important;
+    }
 
-    /* --- Landing Page Styles --- */
-    .hero-box { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-radius: 25px; margin-bottom: 40px; border: 1px solid #90caf9; box-shadow: 0 10px 30px rgba(33, 150, 243, 0.15); }
+    /* --- 🏠 Landing Page Styles --- */
+    .hero-box {
+        text-align: center; padding: 60px 20px;
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-radius: 25px; margin-bottom: 40px; border: 1px solid #90caf9;
+        box-shadow: 0 10px 30px rgba(33, 150, 243, 0.15);
+    }
     .hero-title { font-size: 3.5rem; font-weight: 900; color: #1565c0; margin-bottom: 5px; letter-spacing: -1px; }
     .hero-slogan { font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 700; color: #1976d2; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; }
 
+    /* GLOBAL HEADER */
     .global-header { text-align: center; padding-bottom: 20px; margin-bottom: 30px; border-bottom: 2px solid rgba(0,0,0,0.05); }
     .main-title { font-family: 'Poppins', sans-serif; font-size: 3rem; font-weight: 900; color: #1565c0; margin: 0; letter-spacing: -1px; line-height: 1.1; }
     .fixed-slogan { font-family: 'Poppins', sans-serif; background: -webkit-linear-gradient(45deg, #1e3c72, #2a5298); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; margin-top: 5px; }
@@ -80,6 +95,7 @@ st.markdown("""
     
     .contact-section { background: #f1f8ff; padding: 30px; border-radius: 20px; margin-top: 40px; border: 1px solid #d1e9ff; }
 
+    /* زر الدردشة */
     div[data-testid="stPopover"] { position: fixed !important; bottom: 30px !important; right: 30px !important; left: auto !important; top: auto !important; width: auto !important; z-index: 99999999 !important; display: block !important; }
     div[data-testid="stPopover"] > div > button { width: 60px !important; height: 60px !important; border-radius: 50% !important; background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%) !important; color: white !important; border: 3px solid white !important; box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important; display: flex !important; align-items: center !important; justify-content: center !important; }
     div[data-testid="stPopover"] > div > button::after { content: "💬"; font-size: 30px !important; margin-top: -4px !important; }
@@ -102,44 +118,10 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ==========================================
-# 🔥 تطبيق منطق القائمة (CSS Hack)
-# ==========================================
-# هذا الكود يقوم بحقن CSS ديناميكي بناءً على الحالة
-if st.session_state.sidebar_state == 'expanded':
-    st.markdown("""
-    <style>
-        [data-testid="stSidebar"] {
-            display: block !important;
-            width: 80% !important; /* للهاتف */
-            max-width: 320px !important;
-            z-index: 999999 !important;
-            position: fixed !important;
-            height: 100vh !important;
-            box-shadow: 10px 0 20px rgba(0,0,0,0.2);
-        }
-        @media (min-width: 992px) {
-            [data-testid="stSidebar"] {
-                width: 300px !important;
-                position: relative !important;
-                box-shadow: none;
-            }
-        }
-    </style>
-    """, unsafe_allow_html=True)
-else:
-    # إخفاء القائمة تماماً إذا كانت مغلقة
-    st.markdown("""
-    <style>
-        @media (max-width: 991px) {
-            [data-testid="stSidebar"] { display: none !important; }
-        }
-    </style>
-    """, unsafe_allow_html=True)
-    
-    # إظهار زر القائمة فقط إذا كانت مغلقة
-    if st.button('☰ القائمة / Menu', key='open_menu_main'):
-        open_sidebar()
+# --- NEW: زر فتح القائمة (يظهر فقط إذا كانت مغلقة) ---
+if st.session_state.sidebar_state == 'collapsed':
+    if st.button('☰ القائمة / Menu'):
+        st.session_state.sidebar_state = 'expanded'
         st.rerun()
 
 # ==========================================
@@ -496,10 +478,11 @@ def get_model():
 
 # --- Sidebar ---
 with st.sidebar:
-    # --- تعديل زر الإغلاق ليعمل مع المنطق الجديد ---
-    if st.button('✖ إغلاق / Close', key='close_sidebar_btn', on_click=close_sidebar):
-        pass # التحديث يحدث عبر الـ callback والـ rerun الآلي
-
+    # --- NEW: زر إغلاق القائمة (مهم جداً للهاتف) ---
+    if st.button('✖ إغلاق / Close'):
+        st.session_state.sidebar_state = 'collapsed'
+        st.rerun()
+        
     status_color = "#2ecc71" if is_active else "#ef5350"
     status_text = "نشط" if is_active else "غير مفعل"
     st.markdown(f"<div style='background:{status_color};padding:10px;border-radius:8px;color:white;text-align:center;margin-bottom:20px;'><b>{st.session_state.user_info.get('name')}</b><br><small>{status_text}</small></div>", unsafe_allow_html=True)
