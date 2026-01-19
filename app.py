@@ -555,7 +555,7 @@ if st.session_state.show_payment_page and not is_active:
         st.info(f"✅ {st.session_state.selected_plan}")
         with st.form("confirm_pay"):
             st.write(f"### 💳 BaridiMob")
-            st.markdown("""<h2 style='color:#0d47a1; background:#e3f2fd; padding:10px; border-radius:10px; text-align:center;'>00799999002283727175</h2><p style='text-align:center'>Souad Belkhanousse</p>""", unsafe_allow_html=True)
+            st.markdown("""<h2 style='color:#0d47a1; background:#e3f2fd; padding:10px; border-radius:10px; text-align:center;'>00799999002283727175</h2>""", unsafe_allow_html=True)
             ref = st.text_input("Transaction Reference / رقم الوصل")
             if st.form_submit_button("✅ تأكيد الدفع"):
                 if ref:
