@@ -10,16 +10,16 @@ import random
 from io import BytesIO
 from docx import Document
 
-# --- 1. إعداد الصفحة ---
+# --- 1. إعداد الصفحة (القائمة مفتوحة إجبارياً) ---
 st.set_page_config(
     page_title="Virtual Supervisor", 
     layout="wide", 
     page_icon="🎓",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded" # تم التغيير لتكون مفتوحة دائماً
 )
 
 # ==========================================
-# 🎨 CSS: تصميم شامل + الشعار الكبير
+# 🎨 CSS: تصميم شامل + تثبيت القائمة الجانبية
 # ==========================================
 st.markdown("""
 <style>
@@ -31,7 +31,33 @@ st.markdown("""
         background: linear-gradient(135deg, #fdfbfb 0%, #e3f2fd 100%);
         background-attachment: fixed;
     }
-    [data-testid="stSidebar"] { background-color: rgba(255, 255, 255, 0.98); border-right: 1px solid #ddd; }
+    
+    /* تنسيق خلفية القائمة */
+    [data-testid="stSidebar"] { 
+        background-color: rgba(255, 255, 255, 0.98); 
+        border-right: 1px solid #ddd; 
+    }
+
+    /* --- 🔥🔥🔥 التعديل الجديد: تثبيت القائمة ومنع إغلاقها 🔥🔥🔥 --- */
+    
+    /* 1. إخفاء زر "إغلاق" القائمة (X) نهائياً */
+    [data-testid="stSidebarCollapseButton"] {
+        display: none !important;
+    }
+    
+    /* 2. إجبار القائمة على الظهور حتى في الشاشات الصغيرة (Mobile) */
+    @media (max-width: 991px) {
+        [data-testid="stSidebar"] {
+            display: block !important;
+            width: 100% !important; /* تأخذ مساحة كاملة في الأعلى */
+            position: relative !important; /* تصبح جزءاً من تدفق الصفحة */
+            height: auto !important;
+        }
+        /* تحسين شكل المحتوى الرئيسي ليكون أسفل القائمة */
+        .block-container {
+            padding-top: 2rem !important;
+        }
+    }
 
     /* --- 🔥 GLOBAL HEADER STYLE --- */
     .global-header {
@@ -476,6 +502,13 @@ def get_model():
 
 # --- Sidebar ---
 with st.sidebar:
+    # --- 🔥 التنبيه الخاص بالهاتف 🔥 ---
+    st.markdown("""
+    <div style="padding:10px; background:#fff3cd; color:#856404; border-radius:10px; font-size:0.8rem; text-align:center; margin-bottom:15px; border:1px solid #ffeeba;">
+    📱 <b>تنبيه لمستخدمي الهاتف:</b><br>يرجى تفعيل وضع "Desktop Site" من إعدادات المتصفح للحصول على أفضل تجربة.
+    </div>
+    """, unsafe_allow_html=True)
+    
     status_color = "#2ecc71" if is_active else "#ef5350"
     status_text = "نشط" if is_active else "غير مفعل"
     st.markdown(f"<div style='background:{status_color};padding:10px;border-radius:8px;color:white;text-align:center;margin-bottom:20px;'><b>{st.session_state.user_info.get('name')}</b><br><small>{status_text}</small></div>", unsafe_allow_html=True)
