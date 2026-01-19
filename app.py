@@ -10,12 +10,12 @@ import random
 from io import BytesIO
 from docx import Document
 
-# --- 1. إعداد الصفحة (مهم: الحالة collapsed) ---
+# --- 1. إعداد الصفحة (نعود للوضع الطبيعي: مفتوحة) ---
 st.set_page_config(
-    page_title="Virtual Supervisor v2", 
+    page_title="Virtual Supervisor v3", 
     layout="wide", 
     page_icon="🎓",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded" # تصحيح: نجعلها مفتوحة افتراضياً ليراها مستخدمو الحاسوب
 )
 
 # --- 2. منطق زر القائمة للهاتف (Session State) ---
@@ -29,7 +29,7 @@ def close_menu():
     st.session_state.mobile_menu_open = False
 
 # ==========================================
-# 🎨 CSS: التصميم + إجبار القائمة على الظهور
+# 🎨 CSS: إصلاح العرض للحاسوب والهاتف
 # ==========================================
 st.markdown("""
 <style>
@@ -42,90 +42,88 @@ st.markdown("""
         background-attachment: fixed;
     }
     
-    /* إخفاء الهيدر وشريط الأدوات */
+    /* إخفاء الهيدر */
     [data-testid="stHeader"], [data-testid="stToolbar"] {
         display: none !important;
         visibility: hidden !important;
         height: 0px !important;
     }
-    
-    /* تنسيق زر فتح القائمة (يظهر في الموبايل) */
-    div.stButton > button.open-menu-btn {
-        background-color: #1565c0;
-        color: white;
-        border-radius: 10px;
-        padding: 5px 15px;
-        border: none;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+
+    /* --- منطق الظهور والاختفاء --- */
+
+    /* 1. على الحاسوب (شاشات كبيرة): القائمة تظهر طبيعياً */
+    @media (min-width: 992px) {
+        [data-testid="stSidebar"] {
+            display: block !important;
+        }
+        /* إخفاء زرنا المخصص على الحاسوب لأنه غير ضروري */
+        .stButton.mobile-only {
+            display: none !important;
+        }
     }
 
-    /* --- IMPORTANT: Mobile Sidebar Logic --- */
-    /* بشكل افتراضي نخفي زر الإغلاق الأصلي */
-    [data-testid="stSidebarCollapseButton"] { display: none !important; }
-
-    /* تحسين شكل القائمة */
-    [data-testid="stSidebar"] {
-        background-color: #ffffff !important;
-        border-right: 1px solid #e0e0e0;
-        padding-top: 20px !important;
+    /* 2. على الهاتف (شاشات صغيرة): نتحكم نحن في القائمة */
+    @media (max-width: 991px) {
+        /* إخفاء زر الإغلاق الأصلي الصغير */
+        [data-testid="stSidebarCollapseButton"] {
+            display: none !important;
+        }
+        
+        /* تنسيق القائمة لتكون فوق المحتوى (Overlay) */
+        [data-testid="stSidebar"] {
+            background-color: white !important;
+            border-right: 1px solid #ddd;
+            z-index: 999999 !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            height: 100vh !important;
+            width: 85% !important; /* عرض مناسب للهاتف */
+            max-width: 300px !important;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.2) !important;
+            /* هنا السحر: نستخدم المتغير للتحكم في الظهور */
+        }
     }
 
-    .block-container { padding-top: 1rem !important; }
-
-    /* كلاسات التصميم القديمة */
+    /* كلاسات التصميم العامة */
     .hero-box { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-radius: 25px; margin-bottom: 40px; border: 1px solid #90caf9; box-shadow: 0 10px 30px rgba(33, 150, 243, 0.15); }
     .hero-title { font-size: 3.5rem; font-weight: 900; color: #1565c0; margin-bottom: 5px; letter-spacing: -1px; }
     .hero-slogan { font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 700; color: #1976d2; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; }
     .global-header { text-align: center; padding-bottom: 20px; margin-bottom: 30px; border-bottom: 2px solid rgba(0,0,0,0.05); }
     .main-title { font-family: 'Poppins', sans-serif; font-size: 3rem; font-weight: 900; color: #1565c0; margin: 0; letter-spacing: -1px; line-height: 1.1; }
     .fixed-slogan { font-family: 'Poppins', sans-serif; background: -webkit-linear-gradient(45deg, #1e3c72, #2a5298); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; margin-top: 5px; }
-    .info-section { background: white; padding: 30px; border-radius: 20px; margin-bottom: 30px; border-left: 5px solid #2196f3; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-    .service-card { background: white; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #e3f2fd; height: 100%; transition: transform 0.3s; }
-    .contact-section { background: #f1f8ff; padding: 30px; border-radius: 20px; margin-top: 40px; border: 1px solid #d1e9ff; }
-    .plan-card { background: white; border-radius: 15px; padding: 20px; text-align: center; border: 1px solid #eee; box-shadow: 0 5px 15px rgba(0,0,0,0.05); height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
-    .price-tag { font-size: 2rem; font-weight: 900; color: #2c3e50; margin: 15px 0; }
     .result-card { background: white; padding: 30px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-    .integrity-box { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 15px; border-radius: 12px; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; }
     .stButton button { border-radius: 50px; font-weight: bold; background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%); color: white; border: none; }
-    [data-testid="stChatMessage"] { background: white; border-radius: 15px; }
 </style>
 """, unsafe_allow_html=True)
 
-# --- CSS Injection Based on State ---
-# هذا الكود هو المسؤول عن إجبار القائمة على الظهور في الموبايل
+# --- حقن CSS ديناميكي للهاتف فقط ---
 if st.session_state.mobile_menu_open:
     st.markdown("""
         <style>
         @media (max-width: 991px) {
-            [data-testid="stSidebar"] {
-                display: block !important;
-                width: 100% !important;
-                z-index: 999999;
-                position: fixed;
-                height: 100vh;
-                top: 0;
-                left: 0;
-            }
+            [data-testid="stSidebar"] { display: block !important; }
         }
         </style>
     """, unsafe_allow_html=True)
 else:
-    # إخفاء القائمة في الموبايل إذا لم يتم تفعيل الزر
     st.markdown("""
         <style>
         @media (max-width: 991px) {
-            [data-testid="stSidebar"] {
-                display: none;
-            }
+            [data-testid="stSidebar"] { display: none !important; }
         }
         </style>
     """, unsafe_allow_html=True)
 
-# --- زر فتح القائمة (يظهر فقط إذا كانت مغلقة) ---
+
+# --- زر فتح القائمة (يظهر فقط في الهاتف وعندما تكون القائمة مغلقة) ---
+# نستخدم حاوية فارغة لإخفائه في الحاسوب عبر CSS
 if not st.session_state.mobile_menu_open:
-    col_menu, col_space = st.columns([1, 10])
-    with col_menu:
-        if st.button("☰", key="main_open_btn", help="Open Menu"):
+    # هذا الزر سيختفي في الحاسوب بفضل الـ Media Queries
+    # لكن في الهاتف سيظهر
+    col_btn, _ = st.columns([1, 8])
+    with col_btn:
+        if st.button("☰ القائمة", key="main_open_btn"):
             open_menu()
             st.rerun()
 
@@ -339,7 +337,7 @@ if not st.session_state.logged_in and st.session_state.page_state == "landing":
     st.markdown("""
     <div class="hero-box">
         <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" width="120" style="margin-bottom:15px;">
-        <h1 class="hero-title">Virtual Supervisor v2</h1>
+        <h1 class="hero-title">Virtual Supervisor v3</h1>
         <div class="hero-slogan">Research Smarter, Not Harder</div>
     </div>
     """, unsafe_allow_html=True)
@@ -472,11 +470,14 @@ def get_model():
 
 # --- Sidebar ---
 with st.sidebar:
-    # --- IMPORTANT: Custom Close Button for Mobile ---
+    # --- IMPORTANT: Custom Close Button for Mobile Only ---
+    # يظهر فقط إذا كانت القائمة مفتوحة في وضع الهاتف
     if st.session_state.mobile_menu_open:
-        if st.button("✖ إغلاق القائمة", key="close_menu_btn"):
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("✖ إغلاق القائمة / Close", key="close_menu_btn"):
             close_menu()
             st.rerun()
+        st.markdown("---")
     
     status_color = "#2ecc71" if is_active else "#ef5350"
     status_text = "نشط" if is_active else "غير مفعل"
@@ -567,7 +568,7 @@ with col_main:
     # --- Global Header (Visible only when logged in) ---
     st.markdown("""
     <div class="global-header">
-        <h1 class="main-title">Virtual Supervisor v2</h1>
+        <h1 class="main-title">Virtual Supervisor v3</h1>
         <div class="fixed-slogan">Research Smarter, Not Harder</div>
     </div>
     """, unsafe_allow_html=True)
