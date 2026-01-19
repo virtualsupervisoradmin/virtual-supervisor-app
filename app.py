@@ -15,11 +15,11 @@ st.set_page_config(
     page_title="Virtual Supervisor", 
     layout="wide", 
     page_icon="🎓",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 # ==========================================
-# 🎨 CSS: فرض القائمة الجانبية في الهاتف (Mobile Force)
+# 🎨 CSS: تصميم شامل + الشعار الكبير
 # ==========================================
 st.markdown("""
 <style>
@@ -31,78 +31,84 @@ st.markdown("""
         background: linear-gradient(135deg, #fdfbfb 0%, #e3f2fd 100%);
         background-attachment: fixed;
     }
-    
-    /* --- 🔥🔥🔥 تثبيت القائمة الجانبية (حتى في الهاتف) 🔥🔥🔥 --- */
-    
-    /* 1. إجبار القائمة على الظهور دائماً */
-    section[data-testid="stSidebar"] {
-        display: block !important;
-        visibility: visible !important;
-        width: 300px !important; /* عرض ثابت */
-        position: fixed !important;
-        left: 0 !important;
-        top: 0 !important;
-        height: 100vh !important;
-        z-index: 100000 !important;
-        background-color: #ffffff !important;
-        border-right: 1px solid #e0e0e0;
-        transform: none !important; /* منع الإخفاء بالحركة */
+    [data-testid="stSidebar"] { background-color: rgba(255, 255, 255, 0.98); border-right: 1px solid #ddd; }
+
+    /* --- 🔥 GLOBAL HEADER STYLE --- */
+    .global-header {
+        text-align: center;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+        border-bottom: 2px solid rgba(0,0,0,0.05);
+    }
+    .main-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 3rem;
+        font-weight: 900;
+        color: #1565c0;
+        margin: 0;
+        letter-spacing: -1px;
+        line-height: 1.1;
+    }
+    .fixed-slogan {
+        font-family: 'Poppins', sans-serif;
+        background: -webkit-linear-gradient(45deg, #1e3c72, #2a5298);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 1.6rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-top: 5px;
     }
 
-    /* 2. إزاحة المحتوى الرئيسي لليمين (لكي لا تغطيه القائمة) */
-    .main .block-container {
-        margin-left: 300px !important; /* نفس عرض القائمة */
-        width: calc(100% - 300px) !important;
-        padding-top: 2rem !important;
+    /* --- 🏠 Landing Page Styles --- */
+    .hero-box {
+        text-align: center;
+        padding: 60px 20px;
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-radius: 25px;
+        margin-bottom: 40px;
+        border: 1px solid #90caf9;
+        box-shadow: 0 10px 30px rgba(33, 150, 243, 0.15);
     }
-    
-    /* 3. تعديل خاص للهواتف (Mobile Media Query) */
-    @media (max-width: 768px) {
-        /* في الشاشات الصغيرة جداً، نقلل عرض القائمة قليلاً */
-        section[data-testid="stSidebar"] {
-            width: 250px !important;
-        }
-        /* ونزيح المحتوى */
-        .main .block-container {
-            margin-left: 250px !important;
-            width: calc(100% - 250px) !important;
-        }
-        /* تصغير الخطوط قليلاً لتناسب المساحة الضيقة */
-        h1 { font-size: 2rem !important; }
-        .hero-title { font-size: 2rem !important; }
+    .info-section {
+        background: white; padding: 30px; border-radius: 20px;
+        margin-bottom: 30px; border-left: 5px solid #2196f3;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
-
-    /* 4. إخفاء زر إغلاق القائمة */
-    [data-testid="stSidebarCollapseButton"] {
-        display: none !important;
-    }
-
-    /* --- بقية التنسيقات (كما هي) --- */
-    /* Global Header */
-    .global-header { text-align: center; padding-bottom: 20px; margin-bottom: 30px; border-bottom: 2px solid rgba(0,0,0,0.05); }
-    .main-title { font-family: 'Poppins', sans-serif; font-size: 3rem; font-weight: 900; color: #1565c0; margin: 0; letter-spacing: -1px; line-height: 1.1; }
-    .fixed-slogan { font-family: 'Poppins', sans-serif; background: -webkit-linear-gradient(45deg, #1e3c72, #2a5298); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; margin-top: 5px; }
-
-    /* Landing Page */
-    .hero-box { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-radius: 25px; margin-bottom: 40px; border: 1px solid #90caf9; box-shadow: 0 10px 30px rgba(33, 150, 243, 0.15); }
-    .info-section { background: white; padding: 30px; border-radius: 20px; margin-bottom: 30px; border-left: 5px solid #2196f3; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     .info-text-en { font-size: 1.1rem; color: #444; margin-bottom: 15px; line-height: 1.6; }
     .info-text-ar { font-size: 1.1rem; color: #444; direction: rtl; line-height: 1.8; font-family: 'Tajawal'; }
-    
-    .service-card { background: white; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #e3f2fd; height: 100%; transition: transform 0.3s; }
+
+    .service-card {
+        background: white; padding: 25px; border-radius: 15px;
+        text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        border: 1px solid #e3f2fd; height: 100%; transition: transform 0.3s;
+    }
     .service-card:hover { transform: translateY(-5px); border-color: #2196f3; }
     .srv-icon { font-size: 2.5rem; display: block; margin-bottom: 10px; }
     .srv-title { font-weight: 800; color: #1565c0; font-size: 1.1rem; }
-    
-    .contact-section { background: #f1f8ff; padding: 30px; border-radius: 20px; margin-top: 40px; border: 1px solid #d1e9ff; }
 
-    /* Chat Button */
-    div[data-testid="stPopover"] { position: fixed !important; bottom: 30px !important; right: 30px !important; left: auto !important; top: auto !important; width: auto !important; z-index: 99999999 !important; display: block !important; }
-    div[data-testid="stPopover"] > div > button { width: 60px !important; height: 60px !important; border-radius: 50% !important; background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%) !important; color: white !important; border: 3px solid white !important; box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+    .contact-section {
+        background: #f1f8ff; padding: 30px; border-radius: 20px;
+        margin-top: 40px; border: 1px solid #d1e9ff;
+    }
+
+    /* --- 💬 زر الدردشة (Fixed Right) --- */
+    div[data-testid="stPopover"] {
+        position: fixed !important; bottom: 30px !important; right: 30px !important;
+        left: auto !important; top: auto !important; width: auto !important;
+        z-index: 99999999 !important; display: block !important;
+    }
+    div[data-testid="stPopover"] > div > button {
+        width: 60px !important; height: 60px !important; border-radius: 50% !important;
+        background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%) !important;
+        color: white !important; border: 3px solid white !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+        display: flex !important; align-items: center !important; justify-content: center !important;
+    }
     div[data-testid="stPopover"] > div > button::after { content: "💬"; font-size: 30px !important; margin-top: -4px !important; }
     div[data-testid="stPopover"] > div > button > div { display: none !important; }
 
-    /* Others */
     @keyframes floatUp { 0% { bottom: -50px; opacity: 1; transform: rotate(0deg); } 100% { bottom: 100vh; opacity: 0; transform: rotate(720deg); } }
     .grad-cap { position: fixed; font-size: 35px; z-index: 9999999; pointer-events: none; animation: floatUp 4s linear forwards; }
 
@@ -601,7 +607,7 @@ with col_main:
                     
                     # --- 🔥 استخدام المتغير style الذي عرفناه داخل الفورم ---
                     elif internal_task_key == "formatting":
-                        final_p = f"Reformat and organize this list of references strictly according to {style} style rules. Fix punctuation, italics, and ordering. Input:\n{u_inp}"
+                        final_p = f"Reformat and organize this list of references according to {style} style rules. Fix punctuation, italics, and ordering. Input:\n{u_inp}"
                     
                     elif internal_task_key == "proofread":
                         final_p = f"Academic proofreading. Text: '{u_inp}'"
