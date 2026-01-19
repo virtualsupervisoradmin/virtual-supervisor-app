@@ -10,17 +10,12 @@ import random
 from io import BytesIO
 from docx import Document
 
-# --- NEW: تهيئة حالة القائمة (مغلقة افتراضياً للهاتف) ---
-if 'sidebar_state' not in st.session_state:
-    st.session_state.sidebar_state = 'collapsed'
-
-# --- 1. إعداد الصفحة ---
+# --- 1. إعداد الصفحة (القائمة مفتوحة إجبارياً) ---
 st.set_page_config(
     page_title="Virtual Supervisor", 
     layout="wide", 
     page_icon="🎓",
-    # تم التعديل هنا ليعتمد على الزر
-    initial_sidebar_state=st.session_state.sidebar_state
+    initial_sidebar_state="expanded"
 )
 
 # ==========================================
@@ -118,12 +113,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- NEW: زر فتح القائمة (يظهر فقط إذا كانت مغلقة) ---
-if st.session_state.sidebar_state == 'collapsed':
-    if st.button('☰ القائمة / Menu'):
-        st.session_state.sidebar_state = 'expanded'
-        st.rerun()
-
 # ==========================================
 # 🔥 GLOBAL HEADER
 # ==========================================
@@ -150,7 +139,6 @@ UI_TEXT = {
         "input_ph": "Enter your research topic or text here...",
         "ref_ph": "Paste your references list here...",
         "format_label": "Select Citation Style",
-        "citation_styles": ["APA 7", "MLA 9", "Chicago", "Harvard", "IEEE"],
         "file_ph": "Upload PDF Document",
         "exec_btn": "✨ Generate Magic",
         "save_btn": "💾 Save to History",
@@ -190,7 +178,6 @@ UI_TEXT = {
         "input_ph": "Saisissez votre sujet ici...",
         "ref_ph": "Collez votre liste de références ici...",
         "format_label": "Style de citation",
-        "citation_styles": ["APA 7", "MLA 9", "Chicago", "Harvard", "IEEE"],
         "file_ph": "Télécharger PDF",
         "exec_btn": "✨ Lancer l'Analyse",
         "save_btn": "💾 Sauvegarder",
@@ -230,7 +217,6 @@ UI_TEXT = {
         "input_ph": "اكتب موضوع البحث أو النص هنا...",
         "ref_ph": "ألصق قائمة المراجع هنا...",
         "format_label": "نظام التوثيق المطلوب",
-        "citation_styles": ["APA 7", "MLA 9", "Chicago", "Harvard", "IEEE"],
         "file_ph": "رفع ملف المرجع (PDF)",
         "exec_btn": "✨ ابدأ المعالجة",
         "save_btn": "💾 حفظ في الأرشيف",
@@ -478,11 +464,6 @@ def get_model():
 
 # --- Sidebar ---
 with st.sidebar:
-    # --- NEW: زر إغلاق القائمة (مهم جداً للهاتف) ---
-    if st.button('✖ إغلاق / Close'):
-        st.session_state.sidebar_state = 'collapsed'
-        st.rerun()
-        
     status_color = "#2ecc71" if is_active else "#ef5350"
     status_text = "نشط" if is_active else "غير مفعل"
     st.markdown(f"<div style='background:{status_color};padding:10px;border-radius:8px;color:white;text-align:center;margin-bottom:20px;'><b>{st.session_state.user_info.get('name')}</b><br><small>{status_text}</small></div>", unsafe_allow_html=True)
@@ -590,7 +571,7 @@ with col_main:
             # --- 🔥 واجهة خاصة لتنسيق المراجع ---
             if internal_task_key == "formatting":
                 u_inp = st.text_area(T["ref_ph"], height=200)
-                # قائمة منسدلة لأنظمة التوثيق
+                # قائمة منسدلة لأنظمة التوثيق (تعريف المتغير style داخل الفورم)
                 style = st.selectbox(T["format_label"], T["citation_styles"])
             
             elif internal_task_key == "analyze":
@@ -612,7 +593,7 @@ with col_main:
                     elif internal_task_key == "references":
                         final_p = f"Suggest 10 academic references (APA 7). Topic: '{u_inp}'"
                     
-                    # --- 🔥 استخدام المتغير style ---
+                    # --- 🔥 استخدام المتغير style الذي عرفناه داخل الفورم ---
                     elif internal_task_key == "formatting":
                         final_p = f"Reformat and organize this list of references strictly according to {style} style rules. Fix punctuation, italics, and ordering. Input:\n{u_inp}"
                     
