@@ -10,16 +10,16 @@ import random
 from io import BytesIO
 from docx import Document
 
-# --- 1. إعداد الصفحة (القائمة مفتوحة إجبارياً) ---
+# --- 1. إعداد الصفحة ---
 st.set_page_config(
     page_title="Virtual Supervisor", 
     layout="wide", 
     page_icon="🎓",
-    initial_sidebar_state="expanded"  # سنمنع إغلاقها بالكود أسفله
+    initial_sidebar_state="collapsed"
 )
 
 # ==========================================
-# 🎨 CSS: تثبيت القائمة الجانبية (Force Sidebar)
+# 🎨 CSS: تصميم شامل + الشعار الكبير
 # ==========================================
 st.markdown("""
 <style>
@@ -31,56 +31,94 @@ st.markdown("""
         background: linear-gradient(135deg, #fdfbfb 0%, #e3f2fd 100%);
         background-attachment: fixed;
     }
-    
-    /* إخفاء الهيدر وشريط الأدوات */
-    [data-testid="stHeader"], [data-testid="stToolbar"] {
-        display: none !important;
-        visibility: hidden !important;
-        height: 0px !important;
+    [data-testid="stSidebar"] { background-color: rgba(255, 255, 255, 0.98); border-right: 1px solid #ddd; }
+
+    /* --- 🔥 GLOBAL HEADER STYLE --- */
+    .global-header {
+        text-align: center;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+        border-bottom: 2px solid rgba(0,0,0,0.05);
     }
-    
-    /* --- 🔥🔥🔥 التعديل الجذري: تثبيت القائمة ومنع إغلاقها 🔥🔥🔥 --- */
-    
-    /* 1. إخفاء زر "إغلاق" القائمة (X) نهائياً */
-    [data-testid="stSidebarCollapseButton"] {
-        display: none !important;
+    .main-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 3rem;
+        font-weight: 900;
+        color: #1565c0;
+        margin: 0;
+        letter-spacing: -1px;
+        line-height: 1.1;
     }
-    
-    /* 2. إجبار القائمة على الظهور حتى في الشاشات الصغيرة (Mobile) */
-    @media (max-width: 991px) {
-        [data-testid="stSidebar"] {
-            display: block !important;
-            width: 100% !important; /* تأخذ مساحة كاملة في الأعلى */
-            position: relative !important; /* تصبح جزءاً من تدفق الصفحة */
-            height: auto !important;
-        }
-        /* تحسين شكل المحتوى الرئيسي ليكون أسفل القائمة */
-        .block-container {
-            padding-top: 2rem !important;
-        }
+    .fixed-slogan {
+        font-family: 'Poppins', sans-serif;
+        background: -webkit-linear-gradient(45deg, #1e3c72, #2a5298);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 1.6rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-top: 5px;
     }
 
-    /* --- باقي التنسيقات الأصلية --- */
-    .hero-box { text-align: center; padding: 60px 20px; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-radius: 25px; margin-bottom: 40px; border: 1px solid #90caf9; box-shadow: 0 10px 30px rgba(33, 150, 243, 0.15); }
-    .hero-title { font-size: 3.5rem; font-weight: 900; color: #1565c0; margin-bottom: 5px; letter-spacing: -1px; }
-    .hero-slogan { font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 700; color: #1976d2; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; }
-    .global-header { text-align: center; padding-bottom: 20px; margin-bottom: 30px; border-bottom: 2px solid rgba(0,0,0,0.05); }
-    .main-title { font-family: 'Poppins', sans-serif; font-size: 3rem; font-weight: 900; color: #1565c0; margin: 0; letter-spacing: -1px; line-height: 1.1; }
-    .fixed-slogan { font-family: 'Poppins', sans-serif; background: -webkit-linear-gradient(45deg, #1e3c72, #2a5298); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; margin-top: 5px; }
-    .info-section { background: white; padding: 30px; border-radius: 20px; margin-bottom: 30px; border-left: 5px solid #2196f3; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-    .service-card { background: white; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #e3f2fd; height: 100%; transition: transform 0.3s; }
-    .contact-section { background: #f1f8ff; padding: 30px; border-radius: 20px; margin-top: 40px; border: 1px solid #d1e9ff; }
-    div[data-testid="stPopover"] { position: fixed !important; bottom: 30px !important; right: 30px !important; left: auto !important; top: auto !important; width: auto !important; z-index: 99999999 !important; display: block !important; }
-    div[data-testid="stPopover"] > div > button { width: 60px !important; height: 60px !important; border-radius: 50% !important; background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%) !important; color: white !important; border: 3px solid white !important; box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+    /* --- 🏠 Landing Page Styles --- */
+    .hero-box {
+        text-align: center;
+        padding: 60px 20px;
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-radius: 25px;
+        margin-bottom: 40px;
+        border: 1px solid #90caf9;
+        box-shadow: 0 10px 30px rgba(33, 150, 243, 0.15);
+    }
+    .info-section {
+        background: white; padding: 30px; border-radius: 20px;
+        margin-bottom: 30px; border-left: 5px solid #2196f3;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .info-text-en { font-size: 1.1rem; color: #444; margin-bottom: 15px; line-height: 1.6; }
+    .info-text-ar { font-size: 1.1rem; color: #444; direction: rtl; line-height: 1.8; font-family: 'Tajawal'; }
+
+    .service-card {
+        background: white; padding: 25px; border-radius: 15px;
+        text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        border: 1px solid #e3f2fd; height: 100%; transition: transform 0.3s;
+    }
+    .service-card:hover { transform: translateY(-5px); border-color: #2196f3; }
+    .srv-icon { font-size: 2.5rem; display: block; margin-bottom: 10px; }
+    .srv-title { font-weight: 800; color: #1565c0; font-size: 1.1rem; }
+
+    .contact-section {
+        background: #f1f8ff; padding: 30px; border-radius: 20px;
+        margin-top: 40px; border: 1px solid #d1e9ff;
+    }
+
+    /* --- 💬 زر الدردشة (Fixed Right) --- */
+    div[data-testid="stPopover"] {
+        position: fixed !important; bottom: 30px !important; right: 30px !important;
+        left: auto !important; top: auto !important; width: auto !important;
+        z-index: 99999999 !important; display: block !important;
+    }
+    div[data-testid="stPopover"] > div > button {
+        width: 60px !important; height: 60px !important; border-radius: 50% !important;
+        background: linear-gradient(135deg, #2980b9 0%, #2c3e50 100%) !important;
+        color: white !important; border: 3px solid white !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+        display: flex !important; align-items: center !important; justify-content: center !important;
+    }
     div[data-testid="stPopover"] > div > button::after { content: "💬"; font-size: 30px !important; margin-top: -4px !important; }
     div[data-testid="stPopover"] > div > button > div { display: none !important; }
+
     @keyframes floatUp { 0% { bottom: -50px; opacity: 1; transform: rotate(0deg); } 100% { bottom: 100vh; opacity: 0; transform: rotate(720deg); } }
     .grad-cap { position: fixed; font-size: 35px; z-index: 9999999; pointer-events: none; animation: floatUp 4s linear forwards; }
+
     .plan-card { background: white; border-radius: 15px; padding: 20px; text-align: center; border: 1px solid #eee; box-shadow: 0 5px 15px rgba(0,0,0,0.05); height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
     .price-tag { font-size: 2rem; font-weight: 900; color: #2c3e50; margin: 15px 0; }
     .blur-content { position: relative; max-height: 350px; overflow: hidden; mask-image: linear-gradient(to bottom, black 50%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%); }
     .pay-btn-overlay { background: #e74c3c; color: white; padding: 10px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; border: 2px solid white; box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4); margin-top: -30px; position: relative; z-index: 20; transition: transform 0.2s; }
     .pay-btn-overlay:hover { transform: scale(1.05); }
+    
+    .sales-box { background: white; padding: 30px; border-radius: 15px; border-top: 6px solid #3a7bd5; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 30px; }
     .result-card { background: white; padding: 30px; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     .integrity-box { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 15px; border-radius: 12px; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; }
     .stButton button { border-radius: 50px; font-weight: bold; background: linear-gradient(90deg, #00d2ff 0%, #3a7bd5 100%); color: white; border: none; }
@@ -89,7 +127,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 🔥 GLOBAL HEADER
+# 🔥 GLOBAL FIXED HEADER
 # ==========================================
 if st.session_state.get('page_state') != 'landing':
     st.markdown("""
@@ -114,22 +152,21 @@ UI_TEXT = {
         "input_ph": "Enter your research topic or text here...",
         "ref_ph": "Paste your references list here...",
         "format_label": "Select Citation Style",
-        "citation_styles": ["APA 7", "MLA 9", "Chicago", "Harvard", "IEEE"],
         "file_ph": "Upload PDF Document",
         "exec_btn": "✨ Generate Magic",
         "save_btn": "💾 Save to History",
         "dl_btn": "📥 Download (Word Doc)",
         "warn_title": "IMPORTANT ACADEMIC INTEGRITY NOTICE",
-        "warn_msg": "This tool is an AI assistant designed to guide and structure your thoughts, NOT to write your thesis for you. Copying content directly is considered plagiarism.",
+        "warn_msg": "This tool is an AI assistant designed to guide and structure your thoughts, NOT to write your thesis for you. Copying content directly is considered plagiarism. Please rewrite the output in your own words and verify all citations with original sources.",
         "upgrade_btn": "🔓 Upgrade to Unlock Full Plan",
         "pay_title": "✨ Upgrade to Premium",
         "pay_pitch_title": "Why Subscribe?",
-        "pay_pitch_body": "Specially tuned for academic research standards. Get deep analysis, APA citations, and structured plans.",
+        "pay_pitch_body": "Unlike generic AI tools (like ChatGPT), Virtual Supervisor is specifically tuned for academic research standards. Get deep analysis, APA citations, and structured plans. **Don't let your research stop while waiting for appointments.**",
         "plans": {"1": "Monthly", "6": "6 Months", "12": "Yearly"},
         "plan_desc": {"1": "Flexible start", "6": "Best Value!", "12": "Full commitment"},
         "pay_msg": "🔒 Preview Mode. Upgrade to see full content.",
         "select_btn": "Select",
-        "pay_success": "Payment Sent! Confirmation email coming soon.",
+        "pay_success": "Payment Sent! You will receive an email confirmation upon activation.",
         "pay_error": "Please enter transaction ID.",
         "cancel_btn": "🔙 Return to Workspace",
         "fields": ["Science & Tech", "Medical", "Law", "Economics", "Arts", "Humanities", "Islamic", "Architecture"],
@@ -154,22 +191,21 @@ UI_TEXT = {
         "input_ph": "Saisissez votre sujet ici...",
         "ref_ph": "Collez votre liste de références ici...",
         "format_label": "Style de citation",
-        "citation_styles": ["APA 7", "MLA 9", "Chicago", "Harvard", "IEEE"],
         "file_ph": "Télécharger PDF",
         "exec_btn": "✨ Lancer l'Analyse",
         "save_btn": "💾 Sauvegarder",
         "dl_btn": "📥 Télécharger (Word)",
         "warn_title": "AVIS D'INTÉGRITÉ ACADÉMIQUE",
-        "warn_msg": "Cet outil est un assistant conçu pour vous guider, PAS pour rédiger à votre place. Le copier-coller direct est considéré comme du plagiat.",
+        "warn_msg": "Cet outil est un assistant conçu pour vous guider, PAS pour rédiger à votre place. Le copier-coller direct est considéré comme du plagiat. Veuillez reformuler avec votre propre style et vérifier toutes les sources.",
         "upgrade_btn": "🔓 Passer en Premium",
         "pay_title": "✨ Passer en Premium",
         "pay_pitch_title": "Pourquoi s'abonner ?",
-        "pay_pitch_body": "Spécialisé pour les normes académiques. Obtenez des analyses profondes et des plans structurés.",
+        "pay_pitch_body": "Contrairement aux IA génériques (comme ChatGPT), ce Superviseur Virtuel est spécialisé pour les normes académiques. Obtenez des analyses profondes et des plans structurés. **Ne laissez pas votre recherche attendre des rendez-vous incertains.**",
         "plans": {"1": "Mensuel", "6": "6 Mois", "12": "Annuel"},
         "plan_desc": {"1": "Flexible", "6": "Meilleure Valeur", "12": "Annuel"},
         "pay_msg": "🔒 Mode Aperçu. Abonnez-vous pour tout voir.",
         "select_btn": "Choisir",
-        "pay_success": "Paiement envoyé ! Confirmation par e-mail bientôt.",
+        "pay_success": "Paiement envoyé ! Vous recevrez un e-mail de confirmation après activation.",
         "pay_error": "Entrez le numéro.",
         "cancel_btn": "🔙 Retour",
         "fields": ["Sciences & Tech", "Médical", "Droit", "Économie", "Lettres", "Humaines", "Islamiques", "Architecture"],
@@ -194,22 +230,21 @@ UI_TEXT = {
         "input_ph": "اكتب موضوع البحث أو النص هنا...",
         "ref_ph": "ألصق قائمة المراجع هنا...",
         "format_label": "نظام التوثيق المطلوب",
-        "citation_styles": ["APA 7", "MLA 9", "Chicago", "Harvard", "IEEE"],
         "file_ph": "رفع ملف المرجع (PDF)",
         "exec_btn": "✨ ابدأ المعالجة",
         "save_btn": "💾 حفظ في الأرشيف",
         "dl_btn": "📥 تحميل ملف وورد",
         "warn_title": "تنبيه هام حول الأمانة العلمية",
-        "warn_msg": "تم تصميم هذا المشرف الافتراضي ليكون موجهاً ومساعداً لك لتنظيم أفكارك، وليس ليقوم بكتابة البحث نيابة عنك. النسخ واللصق المباشر يعتبر سرقة علمية.",
+        "warn_msg": "تم تصميم هذا المشرف الافتراضي ليكون موجهاً ومساعداً لك لتنظيم أفكارك، وليس ليقوم بكتابة البحث نيابة عنك. النسخ واللصق المباشر يعتبر سرقة علمية يعاقب عليها القانون. يرجى إعادة صياغة النتائج بأسلوبك الخاص والتأكد من صحة جميع المصادر.",
         "upgrade_btn": "🔓 اشترك الآن لإظهار الخطة كاملة",
         "pay_msg": "🔒 اشترك الآن لإكمال القراءة",
         "pay_title": "✨ ترقية العضوية (Premium)",
         "pay_pitch_title": "لماذا تشترك؟",
-        "pay_pitch_body": "تم تدريب المشرف الافتراضي خصيصاً للمعايير الأكاديمية. احصل على خطط كاملة، تحليل عميق، ومرافقة دائمة.",
+        "pay_pitch_body": "على عكس أدوات الذكاء الاصطناعي العامة (مثل ChatGPT)، تم تدريب المشرف الافتراضي خصيصاً للمعايير الأكاديمية. احصل على خطط كاملة، تحليل عميق، ومرافقة دائمة. **لا تدع بحثك يتوقف في انتظار مواعيد المشرف.**",
         "plans": {"1": "شهري", "6": "6 أشهر", "12": "سنوي"},
         "plan_desc": {"1": "بداية مرنة", "6": "الأكثر طلباً!", "12": "التزام سنوي"},
         "select_btn": "اختر",
-        "pay_success": "تم ارسال الاشتراك، سيصلك بريد إلكتروني لتأكيد تفعيل حسابك.",
+        "pay_success": "تم ارسال الاشتراك، سيصلك بريد إلكتروني لتأكيد تفعيل حسابك بعد التأكد من العملية.",
         "pay_error": "الرجاء إدخال رقم الوصل.",
         "cancel_btn": "🔙 العودة لمساحة العمل",
         "fields": ["العلوم والتكنولوجيا", "الطب والصيدلة", "الحقوق والسياسة", "الاقتصاد", "الآداب واللغات", "العلوم الإنسانية", "العلوم الإسلامية", "العمران"],
@@ -310,7 +345,6 @@ if not st.session_state.logged_in and st.session_state.page_state == "landing":
     <div class="hero-box">
         <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" width="120" style="margin-bottom:15px;">
         <h1 class="hero-title">Virtual Supervisor</h1>
-        <div class="hero-slogan">Research Smarter, Not Harder</div>
     </div>
     """, unsafe_allow_html=True)
     
@@ -323,10 +357,10 @@ if not st.session_state.logged_in and st.session_state.page_state == "landing":
         </div>
         <div class="bilingual-box">
             <div class="info-text-en" style="direction:ltr; text-align:left; margin-bottom:15px; padding-bottom:15px; border-bottom:1px dashed #ddd;">
-                <b>Virtual Supervisor</b> is an advanced AI system trained specifically on academic methodologies. It acts as your 24/7 mentor.
+                <b>Virtual Supervisor</b> is an advanced AI system trained specifically on academic methodologies. Unlike generic tools like ChatGPT, it understands the nuances of thesis structure, APA referencing, and scientific rigor. It acts as your 24/7 mentor.
             </div>
             <div class="info-text-ar">
-                <b>المشرف الافتراضي</b> هو نظام ذكي متطور تم تدريبه خصيصاً على المنهجيات الأكاديمية. يعمل كموجه شخصي متاح 24/7 لمساعدتك في تجاوز عقبات الكتابة والتحليل الفني فوراً.
+                <b>المشرف الافتراضي</b> هو نظام ذكي متطور تم تدريبه خصيصاً على المنهجيات الأكاديمية. على عكس الأدوات العامة مثل ChatGPT، فهو يفهم تفاصيل هيكلة المذكرات، توثيق APA، والدقة العلمية. إنه يعمل كموجه شخصي متاح 24/7 لمساعدتك في تجاوز عقبات الكتابة والتحليل الفني فوراً.
             </div>
         </div>
     </div>
@@ -442,13 +476,6 @@ def get_model():
 
 # --- Sidebar ---
 with st.sidebar:
-    # --- تنبيه مستخدمي الهاتف ---
-    st.markdown("""
-    <div style="padding:10px; background:#fff3cd; color:#856404; border-radius:10px; font-size:0.8rem; text-align:center; margin-bottom:15px; border:1px solid #ffeeba;">
-    📱 <b>تنبيه لمستخدمي الهاتف:</b><br>يرجى تفعيل وضع "Desktop Site" من إعدادات المتصفح للحصول على أفضل تجربة.
-    </div>
-    """, unsafe_allow_html=True)
-    
     status_color = "#2ecc71" if is_active else "#ef5350"
     status_text = "نشط" if is_active else "غير مفعل"
     st.markdown(f"<div style='background:{status_color};padding:10px;border-radius:8px;color:white;text-align:center;margin-bottom:20px;'><b>{st.session_state.user_info.get('name')}</b><br><small>{status_text}</small></div>", unsafe_allow_html=True)
@@ -556,7 +583,7 @@ with col_main:
             # --- 🔥 واجهة خاصة لتنسيق المراجع ---
             if internal_task_key == "formatting":
                 u_inp = st.text_area(T["ref_ph"], height=200)
-                # قائمة منسدلة لأنظمة التوثيق
+                # قائمة منسدلة لأنظمة التوثيق (تعريف المتغير style داخل الفورم)
                 style = st.selectbox(T["format_label"], T["citation_styles"])
             
             elif internal_task_key == "analyze":
@@ -578,9 +605,9 @@ with col_main:
                     elif internal_task_key == "references":
                         final_p = f"Suggest 10 academic references (APA 7). Topic: '{u_inp}'"
                     
-                    # --- 🔥 استخدام المتغير style ---
+                    # --- 🔥 استخدام المتغير style الذي عرفناه داخل الفورم ---
                     elif internal_task_key == "formatting":
-                        final_p = f"Reformat and organize this list of references strictly according to {style} style rules. Fix punctuation, italics, and ordering. Input:\n{u_inp}"
+                        final_p = f"Reformat and organize this list of references according to {style} style rules. Fix punctuation, italics, and ordering. Input:\n{u_inp}"
                     
                     elif internal_task_key == "proofread":
                         final_p = f"Academic proofreading. Text: '{u_inp}'"
